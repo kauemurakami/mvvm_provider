@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mvvm_statemanagements/constants/api_constants.dart';
 import 'package:mvvm_statemanagements/constants/my_app_constants.dart';
 import 'package:mvvm_statemanagements/constants/my_theme_data.dart';
 import 'package:shared_preferences/shared_preferences.dart';

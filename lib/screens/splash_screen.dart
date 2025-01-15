@@ -10,16 +10,19 @@ class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
 
   Future<void> _loadInitialData(BuildContext context) async {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<MoviesProvider>(context, listen: false).getMovies();
+    await Future.microtask(() async {
+      if (context.mounted) {
+        await Provider.of<MoviesProvider>(context, listen: false).getMovies();
+      }
     });
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   Provider.of<MoviesProvider>(context, listen: false).getMovies();
+    // });
   }
 
   @override
   Widget build(BuildContext context) {
-    // final MoviesProvider moviesProvider = Provider.of<MoviesProvider>(
-    //   context,
-    // );
+    final MoviesProvider moviesProvider = Provider.of<MoviesProvider>(context, listen: false);
     return Scaffold(
       body: FutureBuilder(
         future: _loadInitialData(context),
@@ -29,10 +32,23 @@ class SplashScreen extends StatelessWidget {
               child: CircularProgressIndicator.adaptive(),
             );
           } else if (snapshot.hasError) {
-            MyErrorWidget(
-              errorText: snapshot.error.toString(),
-              retryFunction: () {},
-            );
+            if (moviesProvider.genresList.isNotEmpty) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                getIt<NavigationService>().navigateReplace(
+                  const MoviesScreen(),
+                );
+              });
+            }
+            return Provider.of<MoviesProvider>(context).isLoading
+                ? const Center(
+                    child: CircularProgressIndicator.adaptive(),
+                  )
+                : MyErrorWidget(
+                    errorText: snapshot.error.toString(),
+                    retryFunction: () async {
+                      await _loadInitialData(context);
+                    },
+                  );
           } else {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               getIt<NavigationService>().navigateReplace(

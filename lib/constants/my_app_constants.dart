@@ -5,4 +5,6 @@ class MyAppConstants {
 
   //shared preferences constants keys
   static String isDarkTheme = 'isDark';
+
+  
 }

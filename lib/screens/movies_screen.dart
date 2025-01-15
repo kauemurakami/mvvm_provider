@@ -1,11 +1,9 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:mvvm_statemanagements/constants/my_app_icons.dart';
 import 'package:mvvm_statemanagements/constants/my_theme_data.dart';
 import 'package:mvvm_statemanagements/service/init_getit.dart';
 import 'package:mvvm_statemanagements/service/navigation_service.dart';
-import 'package:mvvm_statemanagements/view_models/theme_provider.dart';
+import 'package:mvvm_statemanagements/view_models/movies_provider.dart';
 import 'package:mvvm_statemanagements/view_models/theme_provider.dart';
 import 'package:mvvm_statemanagements/widgets/movies/movies_widget.dart';
 import 'package:provider/provider.dart';
@@ -49,10 +47,33 @@ class MoviesScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: ListView.builder(
-        itemCount: 10,
-        itemBuilder: (context, index) {
-          return MoviesWidget();
+      body: Consumer(
+        builder: (context, MoviesProvider moviesProvider, child) {
+          if (moviesProvider.isLoading && moviesProvider.moviesList.isEmpty) {
+            return const Center(
+              child: CircularProgressIndicator.adaptive(),
+            );
+          } else if (moviesProvider.fetchMoviesError.isNotEmpty) {
+            return Center(
+              child: Text(moviesProvider.fetchMoviesError),
+            );
+          }
+          return NotificationListener<ScrollNotification>(
+            onNotification: (ScrollNotification notification) {
+              if (notification.metrics.pixels == notification.metrics.maxScrollExtent && !moviesProvider.isLoading) {
+                moviesProvider.getMovies();
+                return true;
+              }
+              return false;
+            },
+            child: ListView.builder(
+              itemCount: moviesProvider.moviesList.length,
+              itemBuilder: (context, index) {
+                return ChangeNotifierProvider.value(
+                    value: moviesProvider.moviesList[index], child: const MoviesWidget());
+              },
+            ),
+          );
         },
       ),
     );
