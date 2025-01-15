@@ -1,7 +1,11 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:mvvm_statemanagements/constants/my_app_icons.dart';
+import 'package:mvvm_statemanagements/constants/my_theme_data.dart';
 import 'package:mvvm_statemanagements/service/init_getit.dart';
 import 'package:mvvm_statemanagements/service/navigation_service.dart';
+import 'package:mvvm_statemanagements/view_models/theme_provider.dart';
 import 'package:mvvm_statemanagements/view_models/theme_provider.dart';
 import 'package:mvvm_statemanagements/widgets/movies/movies_widget.dart';
 import 'package:provider/provider.dart';
@@ -13,7 +17,11 @@ class MoviesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeProvider themeProvider = Provider.of<ThemeProvider>(context);
+    //if you use this, the method build is every called when change state
+    // ThemeProvider themeProvider = Provider.of<ThemeProvider>(context);
+    // log('rebuild');
+    //solution is use the Consumer widget in part of the code
+    //thath you update state
     return Scaffold(
       appBar: AppBar(
         title: const Text("Popular Movies"),
@@ -29,12 +37,14 @@ class MoviesScreen extends StatelessWidget {
               color: Colors.red,
             ),
           ),
-          IconButton(
-            onPressed: () async {
-              await themeProvider.toggleTheme();
-            },
-            icon: const Icon(
-              MyAppIcons.darkMode,
+          Consumer(
+            builder: (context, ThemeProvider themeProvider, child) => IconButton(
+              onPressed: () async {
+                await themeProvider.toggleTheme();
+              },
+              icon: Icon(
+                themeProvider.themeData == MyThemeData.darkTheme ? MyAppIcons.lightMode : MyAppIcons.darkMode,
+              ),
             ),
           ),
         ],

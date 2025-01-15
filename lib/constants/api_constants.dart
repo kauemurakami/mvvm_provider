@@ -10,6 +10,5 @@ class ApiConstants {
         'accept': 'application/json',
       };
 
-  //shared preferences constants keys
-  static String isDarkTheme = 'isDark';
+
 }
