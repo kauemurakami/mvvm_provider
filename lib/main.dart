@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:mvvm_statemanagements/view_models/movies_provider.dart';
 import 'package:mvvm_statemanagements/view_models/theme_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -33,7 +34,10 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider<ThemeProvider>(
           create: (_) => ThemeProvider(),
-        )
+        ),
+        ChangeNotifierProvider<MoviesProvider>(
+          create: (_) => MoviesProvider(),
+        ),
       ],
       child: Consumer(
         builder: (context, ThemeProvider themeProvider, child) => MaterialApp(
@@ -41,8 +45,10 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: 'Movies App',
           theme: themeProvider.themeData,
-          home: const MoviesScreen(),
-          // const SplashScreen(), //const MovieDetailsScreen(), //const FavoritesScreen(), //const MoviesScreen(),
+          home:
+              //  const MoviesScreen(),
+              const SplashScreen(),
+          //const MovieDetailsScreen(), //const FavoritesScreen(), //const MoviesScreen(),
         ),
       ),
     );
