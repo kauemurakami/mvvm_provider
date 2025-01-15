@@ -4,7 +4,6 @@ class MyAppConstants {
   static const List<String> genres = ["Horror", "Action", "Thriller", "Drama"];
 
   //shared preferences constants keys
-  static String isDarkTheme = 'isDark';
-
-  
+  static String isDarkThemeKey = 'isDark';
+  static String favoritesKey = 'favorites';
 }
